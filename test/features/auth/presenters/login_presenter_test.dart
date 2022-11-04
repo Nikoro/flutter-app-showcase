@@ -21,7 +21,7 @@ void main() {
   T anyPassword<T>() => any(named: 'password');
 
   test(
-    'should call logInUseCase onLoginButtonPressed ',
+    'should show error when logInUseCase fails',
     () async {
       // GIVEN
       when(
@@ -29,18 +29,14 @@ void main() {
           username: anyUsername(),
           password: anyPassword(),
         ),
-      ).thenAnswer((_) async => failFuture(const LogInFailure.unknown()));
+      ).thenAnswer((_) => failFuture(const LogInFailure.unknown()));
+      when(() => navigator.showError(any())).thenAnswer((_) async => {});
 
       // WHEN
       await presenter.onLoginButtonPressed();
 
       // THEN
-      verify(
-        () => AuthMocks.logInUseCase.execute(
-          username: anyUsername(),
-          password: anyPassword(),
-        ),
-      );
+      verify(() => navigator.showError(any()));
     },
   );
 

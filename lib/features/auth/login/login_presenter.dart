@@ -29,14 +29,14 @@ class LoginPresenter extends Cubit<LoginViewModel> {
 
   Future<void> onLoginButtonPressed() async {
     final credentials = _model.credentials;
-    await logInUseCase
+    await await logInUseCase
         .execute(
           username: credentials.username,
           password: credentials.password,
         )
         .observeStatusChanges((result) => emit(_model.copyWith(logInResult: result)))
         .asyncFold(
-          (fail) => {},
+          (fail) => navigator.showError(fail.displayableFailure()),
           (success) => navigator.showAlert(
             title: appLocalizations.commonSuccessTitle,
             message: appLocalizations.logInSuccessMessage,
