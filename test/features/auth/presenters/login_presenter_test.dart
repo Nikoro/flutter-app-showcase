@@ -1,3 +1,4 @@
+import 'package:flutter_demo/core/domain/model/user.dart';
 import 'package:flutter_demo/features/auth/domain/model/log_in_failure.dart';
 import 'package:flutter_demo/features/auth/login/login_initial_params.dart';
 import 'package:flutter_demo/features/auth/login/login_presentation_model.dart';
@@ -14,14 +15,19 @@ void main() {
   late LoginPresenter presenter;
   late MockLoginNavigator navigator;
 
+  T anyTitle<T>() => any(named: 'title');
+  T anyMessage<T>() => any(named: 'message');
+  T anyUsername<T>() => any(named: 'username');
+  T anyPassword<T>() => any(named: 'password');
+
   test(
     'should call logInUseCase onLoginButtonPressed ',
     () async {
       // GIVEN
       when(
         () => AuthMocks.logInUseCase.execute(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
+          username: anyUsername(),
+          password: anyPassword(),
         ),
       ).thenAnswer((_) async => failFuture(const LogInFailure.unknown()));
 
@@ -31,8 +37,38 @@ void main() {
       // THEN
       verify(
         () => AuthMocks.logInUseCase.execute(
-          username: any(named: 'username'),
-          password: any(named: 'password'),
+          username: anyUsername(),
+          password: anyPassword(),
+        ),
+      );
+    },
+  );
+
+  test(
+    'should show success when logInUseCase returns [User]',
+    () async {
+      // GIVEN
+      when(
+        () => AuthMocks.logInUseCase.execute(
+          username: anyUsername(),
+          password: anyPassword(),
+        ),
+      ).thenAnswer((_) => successFuture(const User.empty()));
+      when(
+        () => navigator.showAlert(
+          title: anyTitle(),
+          message: anyMessage(),
+        ),
+      ).thenAnswer((_) async => {});
+
+      // WHEN
+      await presenter.onLoginButtonPressed();
+
+      // THEN
+      verify(
+        () => navigator.showAlert(
+          title: anyTitle(),
+          message: anyMessage(),
         ),
       );
     },
