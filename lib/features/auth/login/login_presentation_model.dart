@@ -11,10 +11,15 @@ class LoginPresentationModel implements LoginViewModel {
   /// Used for the copyWith method
   LoginPresentationModel._();
 
+  @override
+  bool get isLoginEnabled => true;
+
   LoginPresentationModel copyWith() {
     return LoginPresentationModel._();
   }
 }
 
 /// Interface to expose fields used by the view (page).
-abstract class LoginViewModel {}
+abstract class LoginViewModel {
+  bool get isLoginEnabled;
+}
