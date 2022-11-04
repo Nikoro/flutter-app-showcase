@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_demo/features/auth/domain/use_cases/log_in_use_case.dart';
 import 'package:flutter_demo/features/auth/login/login_navigator.dart';
 import 'package:flutter_demo/features/auth/login/login_presentation_model.dart';
 
@@ -6,9 +7,11 @@ class LoginPresenter extends Cubit<LoginViewModel> {
   LoginPresenter(
     LoginPresentationModel super.model,
     this.navigator,
+    this.logInUseCase,
   );
 
   final LoginNavigator navigator;
+  final LogInUseCase logInUseCase;
 
   // ignore: unused_element
   LoginPresentationModel get _model => state as LoginPresentationModel;
@@ -19,5 +22,13 @@ class LoginPresenter extends Cubit<LoginViewModel> {
 
   void onPasswordChanged(String password) {
     emit(_model.copyWith(credentials: _model.credentials.copyWith(password: password)));
+  }
+
+  Future<void> onLoginButtonPressed() async {
+    final credentials = _model.credentials;
+    await logInUseCase.execute(
+      username: credentials.username,
+      password: credentials.password,
+    );
   }
 }
