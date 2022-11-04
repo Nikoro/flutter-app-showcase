@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_demo/core/utils/bloc_extensions.dart';
 import 'package:flutter_demo/features/auth/domain/use_cases/log_in_use_case.dart';
 import 'package:flutter_demo/features/auth/login/login_navigator.dart';
 import 'package:flutter_demo/features/auth/login/login_presentation_model.dart';
@@ -26,9 +27,11 @@ class LoginPresenter extends Cubit<LoginViewModel> {
 
   Future<void> onLoginButtonPressed() async {
     final credentials = _model.credentials;
-    await logInUseCase.execute(
-      username: credentials.username,
-      password: credentials.password,
-    );
+    await logInUseCase
+        .execute(
+          username: credentials.username,
+          password: credentials.password,
+        )
+        .observeStatusChanges((result) => emit(_model.copyWith(logInResult: result)));
   }
 }
